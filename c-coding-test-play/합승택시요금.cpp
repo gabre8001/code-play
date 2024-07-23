@@ -24,7 +24,11 @@ int solution(int n, int s, int a, int b, vector<vector<int>> fares) {
             }
         }
     }
-
+    
+    for (int i = 1; i < mat.size(); i++) {
+        mat[i][i] = 0;
+    }
+    
     // for (int i = 1; i < mat.size(); i++) {
     //     for (int j = 1; j < mat.size(); j++) {
     //         cout << mat[i][j] << " ";
@@ -32,18 +36,6 @@ int solution(int n, int s, int a, int b, vector<vector<int>> fares) {
     //     cout << endl;
     // }
     // cout << endl;
-
-    int ab_cost = mat[a][b];
-    int sa_cost = mat[s][a];
-    int sb_cost = mat[s][b];
-    if ((ab_cost + sa_cost) > (ab_cost + sb_cost)) {
-        answer = ab_cost + sb_cost;
-    } else {
-        answer = ab_cost + sa_cost;
-    }
-    if (answer > sa_cost + sb_cost) {
-        answer = sa_cost + sb_cost;
-    }
 
     for (int i = 1; i < mat.size(); i++) {
         if (s == i || a == i || b == i) continue;
