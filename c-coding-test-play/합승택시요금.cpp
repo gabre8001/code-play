@@ -38,7 +38,6 @@ int solution(int n, int s, int a, int b, vector<vector<int>> fares) {
     // cout << endl;
 
     for (int i = 1; i < mat.size(); i++) {
-        if (s == i || a == i || b == i) continue;
         int s_i = mat[s][i];
         int a_i = mat[a][i];
         int b_i = mat[b][i];
