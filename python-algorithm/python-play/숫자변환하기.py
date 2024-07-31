@@ -2,11 +2,9 @@ import sys
 from collections import deque
 
 def solution(x, y, n):
-    answer = 0
-
     def BFS(x, y, n):
         if x == y:
-            return -1
+            return 0
         queue = deque([(x, 0)])
         visited = set()
         visited.add(x)
