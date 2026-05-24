@@ -134,5 +134,41 @@ INIT → INITCAR → INITCOUNT → INITPROGRESS → PROGRESS → END → EXIT
 `GameController.run()`에서 모든 예외를 일괄 처리한다. 입력 오류 시 에러 메시지를 출력하고 현재 상태를 유지하여 재입력을 유도하며, `"No line found"` 예외(입력 스트림 종료)는 게임을 즉시 종료한다.
 
 
+## FSM(유한 상태 기계) 응용
+
+이 게임은 숫자 야구 게임과 동일하게 **FSM(Finite State Machine, 유한 상태 기계)을 응용한 구조**로 설계되었다.
+
+### FSM 요소와 코드 매핑
+
+| FSM 요소 | 코드 |
+|---------|------|
+| 상태(State) | `GameStatus` enum (INIT, INITCAR, INITCOUNT, INITPROGRESS, PROGRESS, END, EXIT) |
+| 전이(Transition) | `GameController` 각 메서드 내 `currentInfo.setStatus(...)` 호출 |
+| 입력(Input) | 사용자 입력 (자동차 이름, 시도 횟수) |
+| 동작(Action) | `ControllerMapper`에 매핑된 각 메서드 |
+
+### 상태 전이도
+
+```
+              입력값 오류(재입력)
+               ↙↖      ↙↖
+INIT → INITCAR → INITCOUNT → INITPROGRESS → PROGRESS → END → EXIT
+```
+
+### 숫자 야구 게임과의 구조 비교
+
+같은 FSM 기반이지만 구현 방식에 차이가 있다.
+
+| 항목 | 자동차 경주 | 숫자 야구 |
+|------|------------|----------|
+| 전이 테이블 | `ControllerMapper` (별도 클래스) | `Controller` 내 `HashMap` |
+| FunctionalInterface | 전용 `Service` 인터페이스 | Java 기본 `Runnable` |
+| 루프 종료 | `while(status != EXIT)` | `while(true)` + `System.exit(0)` |
+| Context | `CurrentGameInfo` (상태 + 자동차목록 + 횟수) | `GameEvent` (상태 + 볼결과) |
+| 상태 세분화 | 초기화 단계를 INITCAR → INITCOUNT → INITPROGRESS로 분리 | 단일 INIT 상태 |
+
+자동차 경주 게임은 전이 테이블을 별도 클래스(`ControllerMapper`)로 분리하고, 루프 종료를 `System.exit()` 없이 상태 조건으로 처리하는 점에서 더 구조화된 FSM 구현으로 볼 수 있다.
+
+
 ## 과제 제출 과정
 * [과제 제출 방법](https://github.com/next-step/nextstep-docs/tree/master/precourse)
