@@ -116,5 +116,35 @@ Application
 `Controller.run()`에서 모든 예외를 일괄 처리한다. 입력 오류 시 에러 메시지를 출력하고 현재 상태를 유지하여 재입력을 유도하며, 입력 스트림 종료 시 게임을 즉시 종료한다.
 
 
+## FSM(유한 상태 기계) 응용
+
+이 게임은 **FSM(Finite State Machine, 유한 상태 기계)을 응용한 구조**로 설계되었다.
+
+### FSM 요소와 코드 매핑
+
+| FSM 요소 | 코드 |
+|---------|------|
+| 상태(State) | `GameState` enum (INIT, REFEREECHECK, END, CHECKRESTART, EXIT) |
+| 전이(Transition) | `Controller` 각 메서드 내 `event.setState(...)` 호출 |
+| 입력(Input) | 사용자 입력 (`UserInput.ball()`, `UserInput.restartGame()`) |
+| 동작(Action) | `ControllerMapper`에 매핑된 각 메서드 |
+
+### 상태 전이도
+
+```
+              입력값 오류(재입력)
+                  ↙↖
+INIT → REFEREECHECK → END → CHECKRESTART → EXIT
+           ↑____________|  (3스트라이크 미달)   (입력=2)
+                             (입력=1)→ INIT
+```
+
+### 순수 FSM과의 차이
+
+순수 FSM은 상태 전이 테이블을 외부에서 선언적으로 정의하지만, 이 코드는 전이 로직이 각 메서드 내부에 분산되어 있다. `GameEvent`가 상태를 보관하는 Context 역할을 하고, `ControllerMapper`의 `HashMap`이 전이 테이블 역할을 하여 FSM 패턴에 가깝게 구현된 구조다.
+
+GoF 디자인 패턴 중 **State 패턴**의 간소화된 형태로도 볼 수 있다.
+
+
 ## 과제 제출 과정
 * [과제 제출 방법](https://github.com/next-step/nextstep-docs/tree/master/precourse)
