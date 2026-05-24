@@ -18,13 +18,13 @@ public class Referee {
     public int checkStrike(String in) {
         int result = 0;
         for (int i = 0; i < 3; i++) {
-            result += checkStrikeAt(i, in.charAt(i), i, answer.charAt(i));
+            result += checkStrikeAt(in.charAt(i), answer.charAt(i));
         }
         return result;
     }
 
-    private int checkStrikeAt(int i, char c1, int j, char c2) {
-        if (i == j && c1 == c2) {
+    private int checkStrikeAt(char c1, char c2) {
+        if (c1 == c2) {
             return 1;
         }
         return 0;

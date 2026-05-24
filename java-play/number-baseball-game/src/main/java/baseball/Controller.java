@@ -5,10 +5,10 @@ import java.util.Map;
 
 public class Controller {
     private Map<Enum<GameState>, Runnable> map;
-    GameEvent event;
-    Referee referee;
-    PrintGame out;
-    UserInput in;
+    private GameEvent event;
+    private Referee referee;
+    private PrintGame out;
+    private UserInput in;
 
     public Controller() {
         /**
@@ -54,7 +54,7 @@ public class Controller {
             String input = in.ball();
             BallState ballState = referee.checkBallState(input);
             out.printBallState(ballState);
-            chaeckGameOut(ballState);
+            checkGameOut(ballState);
         } catch (Exception e) {
             out.printError(e.getMessage());
         }
@@ -89,7 +89,7 @@ public class Controller {
      * 3스트라이크 일때 게임 상태를 END로 변경
      * @param ballState
      */
-    private void chaeckGameOut(BallState ballState) {
+    private void checkGameOut(BallState ballState) {
         if (ballState.isOut()) {
             event.setState(GameState.END);
         }

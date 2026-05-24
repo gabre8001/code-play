@@ -45,5 +45,76 @@
 * 게임 종료 여부를 판단
 * 게임 재시작을 판단
 
+## 프로젝트 구조
+
+### 패키지 구성
+
+```
+number-baseball-game/
+├── src/main/java/
+│   ├── baseball/
+│   │   ├── Application.java      ← 진입점
+│   │   ├── Controller.java       ← 게임 흐름 제어
+│   │   ├── GameState.java        ← 게임 상태 enum
+│   │   ├── GameEvent.java        ← 상태 + 볼 정보 저장
+│   │   ├── BallState.java        ← 스트라이크/볼 결과 저장
+│   │   ├── Referee.java          ← 정답 비교 로직
+│   │   ├── ThreeDigit.java       ← 3자리 난수 생성
+│   │   ├── PrintGame.java        ← 출력 담당
+│   │   └── UserInput.java        ← 입력 및 검증
+│   └── nextstep/utils/
+│       ├── Console.java
+│       └── Randoms.java
+└── src/test/java/
+    └── baseball/
+        ├── ApplicationTest.java
+        └── RefereeTest.java
+```
+
+### 아키텍처: 상태 기반 (State Pattern)
+
+`GameState` enum으로 상태를 정의하고, `Controller`의 `mappingController()`에서 상태별 실행 함수를 `HashMap`에 매핑한다.
+
+**게임 상태 흐름**
+
+```
+INIT → REFEREECHECK → END → CHECKRESTART → EXIT
+              ↑___________|  (3스트라이크 미달 시 반복)
+                             (재시작 선택 시 INIT으로)
+```
+
+### 클래스별 역할
+
+| 클래스 | 역할 | 주요 검증 |
+|--------|------|----------|
+| `GameState` | 5가지 게임 상태 enum 정의 | — |
+| `GameEvent` | 현재 상태 + 볼 결과를 한 곳에서 관리 | — |
+| `BallState` | 스트라이크/볼 수 저장, 낫싱/3스트라이크 판별 | — |
+| `Referee` | 정답과 입력값 비교 (스트라이크/볼 계산) | — |
+| `ThreeDigit` | 1~9 중복 없는 3자리 난수 생성 | — |
+| `UserInput` | 사용자 입력 수신 | 3자리·숫자만·중복 없음, 재시작은 1 또는 2만 허용 |
+| `PrintGame` | 모든 출력 담당 | — |
+| `Controller` | 상태별 메서드 매핑 및 루프 실행 | 예외 일괄 처리 |
+
+### 클래스 간 의존 관계
+
+```
+Application
+└── Controller
+    ├── GameEvent      (상태 관리)
+    ├── Referee        (정답 검증)
+    │   └── BallState  (비교 결과)
+    ├── PrintGame      (출력)
+    ├── UserInput      (입력)
+    │   └── Console
+    └── ThreeDigit     (난수 생성)
+        └── Randoms
+```
+
+### 예외 처리
+
+`Controller.run()`에서 모든 예외를 일괄 처리한다. 입력 오류 시 에러 메시지를 출력하고 현재 상태를 유지하여 재입력을 유도하며, 입력 스트림 종료 시 게임을 즉시 종료한다.
+
+
 ## 과제 제출 과정
 * [과제 제출 방법](https://github.com/next-step/nextstep-docs/tree/master/precourse)

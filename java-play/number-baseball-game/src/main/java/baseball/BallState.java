@@ -24,16 +24,10 @@ public class BallState {
     }
 
     public boolean isNothing() {
-        if (strike == 0 && ball == 0) {
-            return true;
-        }
-        return false;
+        return strike == 0 && ball == 0;
     }
 
     public boolean isOut() {
-        if (strike == 3) {
-            return true;
-        }
-        return false;
+        return strike == 3;
     }
 }
